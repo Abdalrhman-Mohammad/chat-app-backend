@@ -18,7 +18,6 @@ let allChats = [];
 let messagesOfChats = [];
 let isTyping = [];
 socketIO.on('connection', (socket) => {
-  // console.log(`a user connected `, socket);
   socket.on('typing', (data) => {
     let idx = -1;
     const foundChat = isTyping.filter((chat, index) => {
@@ -31,33 +30,24 @@ socketIO.on('connection', (socket) => {
     if (idx != -1) {
       isTyping[idx].isTyping = data.isTyping;
     }
-    console.log(data, foundChat[0].isTyping);
     socket.emit('typing', foundChat[0].isTyping);
   });
   socket.on('newMessage', (data) => {
-    console.log(data);
     const foundChat = messagesOfChats.filter((chat) => {
       return (chat.title == data.title);
     });
-    console.log(foundChat);
     foundChat[0].messages.unshift(data);
     socket.broadcast.emit('newMessage', foundChat[0].messages);
   });
   socket.on('findChat', (title) => {
-    console.log('title : ', title);
     const foundChat = messagesOfChats.filter((chat) => {
       return (chat.title == title);
     });
     socket.emit('allMessage', foundChat[0].messages);
   });
 });
-app.get('/api', (req, res) => {
-  console.log('hello');
-  res.json({});
-})
 app.post('/chat/add', (req, res) => {
   try {
-    console.log('hello', req.body);
     const foundChat = allChats
                           .map((chat) => {
                             return (chat.title == req.body.title);
@@ -85,22 +75,17 @@ app.post('/chat/add', (req, res) => {
         user.chatsID.push(req.body.title);
       }
     })
-    console.log('allChats', allChats);
-    console.log('allUsers', allUsers);
     res.send({'status': true});
   } catch (error) {
-    console.log(error);
     res.send({'status': false});
   }
 })
 app.post('/user', (req, res) => {
-  console.log('hello', req.body.name, allUsers.length, allUsers[0], allUsers);
   const found = allUsers
                     .map((user) => {
                       return (user.name == req.body.name);
                     })
                     .indexOf(true) != -1;
-  console.log(found, '--------------------')
   let user = null;
   if (found) {
     let userIdx = -1;
@@ -109,7 +94,6 @@ app.post('/user', (req, res) => {
     })
     user = allUsers[userIdx];
   }
-  console.log(user, '--------user--------')
   res.send({'status': found, user: user});
 })
 app.post('/user/register', (req, res) => {
@@ -122,7 +106,6 @@ app.post('/user/register', (req, res) => {
     user = allUsers[allUsers.indexOf(req.body.name)];
     found = true;
   }
-  console.log('hello', '--------', allUsers, '----------');
   res.send({found: found, user: user});
 })
 http.listen(PORT, () => console.log(`server running on port ${PORT}`));
