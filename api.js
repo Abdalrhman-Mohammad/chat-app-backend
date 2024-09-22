@@ -30,7 +30,8 @@ socketIO.on('connection', (socket) => {
     if (idx != -1) {
       isTyping[idx].isTyping = data.isTyping;
     }
-    socket.broadcast.emit('typing', foundChat[0].isTyping);
+    socket.broadcast.emit(
+        'typing', {isNowTyping: foundChat[0].isNowTyping, title: title});
   });
   socket.on('newMessage', (data) => {
     const foundChat = messagesOfChats.filter((chat) => {
