@@ -31,7 +31,9 @@ socketIO.on('connection', (socket) => {
       isTyping[idx].isTyping = data.isTyping;
     }
     socket.broadcast.emit(
-        'typing', {isNowTyping: foundChat[0].isNowTyping, title: title});
+        'typing',
+       
+        {isNowTyping: foundChat[0].isNowTyping, title: data.isTyping});
   });
   socket.on('newMessage', (data) => {
     const foundChat = messagesOfChats.filter((chat) => {
