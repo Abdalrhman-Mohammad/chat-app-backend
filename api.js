@@ -33,7 +33,7 @@ socketIO.on('connection', (socket) => {
     socket.broadcast.emit(
         'typing',
        
-        {isNowTyping: foundChat[0].isNowTyping, title: data.isTyping});
+        {isNowTyping: foundChat[0].isNowTyping, title: data.title});
   });
   socket.on('newMessage', (data) => {
     const foundChat = messagesOfChats.filter((chat) => {
